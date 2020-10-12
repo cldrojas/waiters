@@ -32,7 +32,7 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     @required String local,
   })  : assert(preferencesRepository != null),
         _preferencesRepository = preferencesRepository,
-        _initialState = PreferencesState(local);
+        _initialState = PreferencesState('lincoyan');
 
   @override
   PreferencesState get initialState => _initialState;

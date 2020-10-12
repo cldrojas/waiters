@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:waiters/page/pedido.dart';
 
 class Mesa extends StatefulWidget {
   final int index;
@@ -19,7 +20,7 @@ class _MesaState extends State<Mesa> {
     switch (widget.estado) {
       case 'libre':
         color = Colors.green;
-        icon = Icons.accessibility_new;
+        icon = Icons.deck;
         break;
       case 'ocupada':
         color = Colors.blue;
@@ -31,6 +32,7 @@ class _MesaState extends State<Mesa> {
         break;
       case 'cuenta':
         color = Colors.red;
+        icon = Icons.attach_money;
         break;
       case 'pidiendo':
         color = Colors.lightBlue;
@@ -42,8 +44,21 @@ class _MesaState extends State<Mesa> {
       onTap: () {
         FirebaseDatabase.instance
             .reference()
-            .child("masterino/${widget.local}")
+            .child("local/${widget.local}")
             .update({'mesa-${widget.index}': 'pidiendo'});
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PedidoPage(
+                      local: widget.local,
+                      mesa: widget.index,
+                    )));
+      },
+      onLongPress: () {
+        FirebaseDatabase.instance
+            .reference()
+            .child("local/${widget.local}")
+            .update({'mesa-${widget.index}': 'ocupada'});
       },
       child: Container(
           height: 200,
@@ -53,17 +68,17 @@ class _MesaState extends State<Mesa> {
             alignment: Alignment.center,
             children: [
               Positioned(
-                  top: 60,
-                  left: 10,
+                  top: 100,
+                  left: 40,
                   child: Text('Mesa ${widget.index}',
                       style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold))),
+                          fontSize: 25, fontWeight: FontWeight.bold))),
               Positioned(
-                top: 10,
-                left: 10,
+                top: 20,
+                left: 50,
                 child: Icon(
                   icon,
-                  size: 40,
+                  size: 60,
                 ),
               ),
             ],

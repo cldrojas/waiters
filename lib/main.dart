@@ -14,12 +14,17 @@ void main() async {
   runApp(
     BlocProvider(
       create: (context) => preferencesBloc,
-      child: WaitersApp(),
+      child: WaitersApp(
+        bloc: preferencesBloc,
+      ),
     ),
   );
 }
 
 class WaitersApp extends StatelessWidget {
+  final PreferencesBloc bloc;
+
+  const WaitersApp({Key key, this.bloc}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PreferencesBloc, PreferencesState>(
@@ -32,7 +37,9 @@ class WaitersApp extends StatelessWidget {
             primarySwatch: Colors.teal,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: HomePage(),
+          home: HomePage(
+            prefBloc: bloc,
+          ),
         );
       },
     );

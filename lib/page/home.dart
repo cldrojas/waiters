@@ -1,11 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:waiters/bloc/preferences_bloc.dart';
 import 'package:waiters/widget/mesa.dart';
 
 import 'info.dart';
 
 class HomePage extends StatefulWidget {
+  final PreferencesBloc prefBloc;
+  const HomePage({
+    Key key,
+    this.prefBloc,
+  }) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -15,14 +24,12 @@ class _HomePageState extends State<HomePage> {
   DatabaseReference _dbRef;
 
   bool _signIn;
-  String _local;
 
   @override
   void initState() {
     super.initState();
-    _dbRef = FirebaseDatabase.instance.reference().child("masterino");
+    _dbRef = FirebaseDatabase.instance.reference().child("local");
     _signIn = false;
-    _local = 'lincoyan';
   }
 
   @override
@@ -30,59 +37,74 @@ class _HomePageState extends State<HomePage> {
     return _signIn ? mainScaffold() : signInScaffold();
   }
 
+  Map<String, dynamic> getJson(json) {
+    return Map.from(json);
+  }
+
   Widget mainScaffold() {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                  icon: Icon(
-                    Icons.settings,
-                    size: 35,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => InfoPage(),
+    return BlocBuilder<PreferencesBloc, PreferencesState>(
+      builder: (buildcontext, state) => SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Local vinculado: ' + widget.prefBloc.state.local,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            ),
+            centerTitle: true,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                    icon: Icon(
+                      Icons.settings,
+                      size: 35,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InfoPage(
+                            prefsBloc: widget.prefBloc,
+                            reference: _dbRef,
+                          ),
+                        ),
+                      );
+                    }),
+              )
+            ],
+          ),
+          body: StreamBuilder(
+            stream: _dbRef.onValue,
+            builder: (context, snapshot) {
+              if (snapshot.hasData &&
+                  !snapshot.hasError &&
+                  snapshot.data.snapshot.value != null) {
+                dynamic local = snapshot
+                    .data.snapshot.value['${widget.prefBloc.state.local}'];
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3),
+                  itemCount: local.length,
+                  itemBuilder: (context, i) {
+                    int mesa = i + 1;
+                    print(local['mesa-$mesa']);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Mesa(
+                        local: widget.prefBloc.state.local,
+                        estado: local['mesa-$mesa'],
+                        index: i + 1,
                       ),
                     );
-                  }),
-            )
-          ],
-        ),
-        body: StreamBuilder(
-          stream: _dbRef.onValue,
-          builder: (context, snapshot) {
-            if (snapshot.hasData &&
-                !snapshot.hasError &&
-                snapshot.data.snapshot.value != null) {
-              dynamic local = snapshot.data.snapshot.value['$_local'];
-              return GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3),
-                itemCount: local.length,
-                itemBuilder: (context, i) {
-                  int mesa = i + 1;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Mesa(
-                      local: _local,
-                      estado: local['mesa-$mesa'],
-                      index: i + 1,
-                    ),
-                  );
-                },
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+                  },
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
         ),
       ),
     );
