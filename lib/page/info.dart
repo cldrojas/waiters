@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -44,11 +45,19 @@ class _InfoPageState extends State<InfoPage> {
               },
             ),
             ListTile(
-              title: Text('Cerrar sesion'),
-              trailing: Icon(Icons.exit_to_app),
+              title: Text('Modificar disponibilidad'),
+              trailing: Icon(Icons.calendar_today_rounded),
               contentPadding: EdgeInsets.symmetric(horizontal: 20),
               onTap: () {
-                //TODO: implement logout functionality
+                //TODO: implement dispo functionality
+              },
+            ),
+            ListTile(
+              title: Text('Cerrar sesion'),
+              trailing: Icon(Icons.logout),
+              contentPadding: EdgeInsets.symmetric(horizontal: 20),
+              onTap: () {
+                FirebaseAuth.instance.signOut();
               },
             ),
           ],

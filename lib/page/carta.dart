@@ -27,7 +27,10 @@ class _CartaPageState extends State<CartaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carta'),
+        title: TextField(
+          decoration: InputDecoration(
+              hintText: 'Carta', hintStyle: TextStyle(color: Colors.white)),
+        ),
       ),
       body: Container(
         child: StreamBuilder(
@@ -88,12 +91,6 @@ class _CartaPageState extends State<CartaPage> {
                 return Center(child: CircularProgressIndicator());
               }
             }),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //TODO: agregar item al pedido
-        },
-        child: Icon(Icons.add),
       ),
     );
   }

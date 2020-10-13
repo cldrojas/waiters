@@ -67,7 +67,8 @@ class _PedidoPageState extends State<PedidoPage> {
                                 color: Colors.white,
                                 onPressed: () => {
                                       _dbRef.child('$id').remove(),
-                                      print('eliminando $id')
+                                      print('eliminando $id'),
+                                      print('item seleccionado' + item)
                                     }),
                             onTap: () => Navigator.push(
                                 context,
