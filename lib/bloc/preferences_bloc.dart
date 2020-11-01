@@ -14,6 +14,15 @@ class CambiarLocal extends PreferencesEvent {
   List<Object> get props => [local];
 }
 
+class Login extends PreferencesEvent {
+  final String usuario;
+
+  Login(this.usuario);
+
+  @override
+  List<Object> get props => [usuario];
+}
+
 class PreferencesState extends Equatable {
   final String local;
 
@@ -42,6 +51,8 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     if (event is CambiarLocal) {
       await _preferencesRepository.saveLocal(event.local);
       yield PreferencesState(event.local);
+    } else if (event is Login) {
+      await _preferencesRepository.login(event.usuario);
     }
   }
 }
