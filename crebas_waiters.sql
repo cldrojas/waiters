@@ -2,7 +2,7 @@
 create table usuario(
 	id int primary key auto_increment,	
 	email varchar(25) not null,
-	password varchar(25) not null
+	password varchar(255) not null
 );
 
 create table cargo(

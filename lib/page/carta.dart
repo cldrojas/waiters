@@ -19,10 +19,6 @@ class _CartaPageState extends State<CartaPage> {
     _dbPedido = FirebaseDatabase.instance.reference().child("pedido");
   }
 
-  Map<String, dynamic> getJson(json) {
-    return Map.from(json);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,34 +36,42 @@ class _CartaPageState extends State<CartaPage> {
                   !snapshot.hasError &&
                   snapshot.data != null) {
                 if (snapshot.data.snapshot.value != null) {
+                  Map<String, dynamic> _sandwich =
+                      Map.from(snapshot.data.snapshot.value);
+                  //String dispo = _sandwich.entries.;
+
                   return ListView.builder(
                       itemCount: snapshot.data.snapshot.value.length,
                       itemBuilder: (context, index) {
-                        print(snapshot.data.snapshot.value);
-                        String item = getJson(snapshot.data.snapshot.value)
-                            .entries
-                            .elementAt(index)
-                            .key;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: ListTile(
-                            title: Text(
-                              item,
-                              style: TextStyle(color: Colors.white),
+                        String item = _sandwich.entries.elementAt(index).key;
+                        var cosas = _sandwich.entries.elementAt(index).value;
+                        String local = widget.path.split('/').first;
+                        if (!cosas.entries.toString().contains(local)) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: ListTile(
+                              title: Text(
+                                item,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              leading: Icon(
+                                Icons.list,
+                                color: Colors.white,
+                              ),
+                              tileColor: Colors.deepPurple,
+                              onTap: () {
+                                _dbPedido
+                                    .child(widget.path)
+                                    .update({'item-$index': item});
+                                Navigator.pop(context);
+                              },
                             ),
-                            leading: Icon(
-                              Icons.list,
-                              color: Colors.white,
-                            ),
-                            tileColor: Colors.deepPurple,
-                            onTap: () {
-                              _dbPedido
-                                  .child(widget.path)
-                                  .update({'item-$index': item});
-                              Navigator.pop(context);
-                            },
-                          ),
-                        );
+                          );
+                        } else {
+                          return Divider(
+                            height: 0,
+                          );
+                        }
                       });
                 } else {
                   return Center(

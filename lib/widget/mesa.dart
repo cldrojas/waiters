@@ -42,6 +42,9 @@ class _MesaState extends State<Mesa> {
         color = Colors.cyanAccent;
         icon = Icons.emoji_food_beverage_rounded;
         break;
+      case 'listo':
+        color = Colors.deepOrange;
+        icon = Icons.fastfood;
     }
 
     return GestureDetector(
@@ -62,7 +65,7 @@ class _MesaState extends State<Mesa> {
         FirebaseDatabase.instance
             .reference()
             .child("local/${widget.local}")
-            .update({'mesa-${widget.index}': 'cocinando'});
+            .update({'mesa-${widget.index}': 'ocupada'});
       },
       child: Container(
           height: 200,

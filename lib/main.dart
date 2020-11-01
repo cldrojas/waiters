@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:waiters/bloc/preferences_bloc.dart';
-import 'package:waiters/page/home.dart';
+import 'package:waiters/bloc/preferences/preferences_bloc.dart';
 import 'package:waiters/repository/preferences_repository_impl.dart';
+
+import 'page/home.dart';
+import 'page/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,17 +16,17 @@ void main() async {
   runApp(
     BlocProvider(
       create: (context) => preferencesBloc,
-      child: WaitersApp(
-        bloc: preferencesBloc,
-      ),
+      child: WaitersApp(),
     ),
   );
 }
 
-class WaitersApp extends StatelessWidget {
-  final PreferencesBloc bloc;
+class WaitersApp extends StatefulWidget {
+  @override
+  _WaitersAppState createState() => _WaitersAppState();
+}
 
-  const WaitersApp({Key key, this.bloc}) : super(key: key);
+class _WaitersAppState extends State<WaitersApp> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PreferencesBloc, PreferencesState>(
@@ -35,11 +37,10 @@ class WaitersApp extends StatelessWidget {
           darkTheme: ThemeData.dark(),
           theme: ThemeData(
             primarySwatch: Colors.teal,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: HomePage(
-            prefBloc: bloc,
-          ),
+          home: state is PreferencesLoaded && state.usuario != null
+              ? Home()
+              : SignIn(),
         );
       },
     );

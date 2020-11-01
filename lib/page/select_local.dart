@@ -1,23 +1,27 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:waiters/bloc/preferences_bloc.dart';
+import 'package:waiters/bloc/preferences/preferences_bloc.dart';
 
 class LocalPage extends StatefulWidget {
   final DatabaseReference reference;
-  final PreferencesBloc prefsBloc;
 
-  const LocalPage({Key key, this.reference, this.prefsBloc}) : super(key: key);
+  const LocalPage({Key key, this.reference}) : super(key: key);
 
   @override
   _LocalPageState createState() => _LocalPageState();
 }
 
-Map<String, dynamic> getJson(json) {
-  return Map.from(json);
-}
-
 class _LocalPageState extends State<LocalPage> {
+  PreferencesBloc prefs;
+  DatabaseReference ref;
+  @override
+  void initState() {
+    super.initState();
+    prefs = BlocProvider.of<PreferencesBloc>(context);
+    ref = FirebaseDatabase.instance.reference().child("local");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +37,7 @@ class _LocalPageState extends State<LocalPage> {
                   return ListView.builder(
                       itemCount: snapshot.data.snapshot.value.length,
                       itemBuilder: (context, index) {
-                        String local = getJson(snapshot.data.snapshot.value)
+                        String local = Map.from(snapshot.data.snapshot.value)
                             .entries
                             .elementAt(index)
                             .key;
@@ -50,7 +54,7 @@ class _LocalPageState extends State<LocalPage> {
                             ),
                             tileColor: Colors.deepPurple,
                             onTap: () {
-                              widget.prefsBloc.add(CambiarLocal(local));
+                              prefs.add(CambiarLocal(local));
                               Navigator.pop(context);
                             },
                           ),

@@ -21,15 +21,22 @@ class _PedidoPageState extends State<PedidoPage> {
         .child("pedido/${widget.local}/mesa-${widget.mesa}");
   }
 
-  Map<String, dynamic> getJson(json) {
-    return Map.from(json);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pedido mesa ${widget.mesa}'),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () {
+                FirebaseDatabase.instance
+                    .reference()
+                    .child('local/${widget.local}')
+                    .update({'mesa-${widget.mesa}': 'cocinando'});
+                Navigator.pop(context);
+              })
+        ],
       ),
       body: Container(
         child: StreamBuilder(
@@ -42,12 +49,11 @@ class _PedidoPageState extends State<PedidoPage> {
                   return ListView.builder(
                       itemCount: snapshot.data.snapshot.value.length,
                       itemBuilder: (context, index) {
-                        print(snapshot.data.snapshot.value);
-                        String item = getJson(snapshot.data.snapshot.value)
+                        String item = Map.from(snapshot.data.snapshot.value)
                             .entries
                             .elementAt(index)
                             .value;
-                        String id = getJson(snapshot.data.snapshot.value)
+                        String id = Map.from(snapshot.data.snapshot.value)
                             .entries
                             .elementAt(index)
                             .key;
