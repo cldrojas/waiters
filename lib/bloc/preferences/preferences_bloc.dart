@@ -31,21 +31,25 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       yield* _mapCambiarLocalToState(event.local);
     } else if (event is Login) {
       yield* _mapLoginToState(event.mail, event.pass);
+    } else if (event is Logout) {
+      yield* _mapLogOutToState();
     }
   }
 
   Stream<PreferencesState> _mapCambiarLocalToState(String local) async* {
-    await _preferencesRepository.usuario;
+    var user = await _preferencesRepository.usuario;
     await _preferencesRepository.saveLocal(local);
-    yield PreferencesLoaded(local: local);
+    yield PreferencesLoaded(local: local, usuario: user);
   }
 
   Stream<PreferencesState> _mapLoadPreferencesToState() async* {
     var local = await _preferencesRepository.local;
-    if (local == null) {
-      local = 'lincoyan';
+    var usuario = await _preferencesRepository.usuario;
+    if (local != null && usuario != null) {
+      yield PreferencesLoaded(local: local, usuario: usuario);
+    } else {
+      yield PreferencesLoaded(local: 'lincoyan');
     }
-    yield PreferencesLoaded(local: local);
   }
 
   Stream<PreferencesState> _mapLoginToState(
@@ -62,5 +66,11 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     } else {
       yield LoginError('Usuario no encontrado');
     }
+  }
+
+  Stream<PreferencesState> _mapLogOutToState() async* {
+    _preferencesRepository.deleteUsuario();
+    var local = await _preferencesRepository.local;
+    yield PreferencesLoaded(local: local);
   }
 }

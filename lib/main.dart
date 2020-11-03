@@ -34,13 +34,9 @@ class _WaitersAppState extends State<WaitersApp> {
         return MaterialApp(
           title: 'Waiters 1.0',
           debugShowCheckedModeBanner: false,
-          darkTheme: ThemeData.dark(),
           theme: ThemeData(
-            primarySwatch: Colors.teal,
-          ),
-          home: state is PreferencesLoaded && state.usuario != null
-              ? Home()
-              : SignIn(),
+              primarySwatch: Colors.teal, brightness: Brightness.dark),
+          home: state is PreferencesLoaded ? Home() : SignIn(),
         );
       },
     );
