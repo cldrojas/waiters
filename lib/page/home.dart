@@ -79,7 +79,9 @@ class _HomeState extends State<Home> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DisponibilidadPage()));
+                          builder: (context) => DisponibilidadPage(
+                                local: local,
+                              )));
                 },
               ),
               ListTile(
@@ -104,7 +106,7 @@ class _HomeState extends State<Home> {
               return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3),
-                itemCount: locales.length,
+                itemCount: locales.length - 1,
                 itemBuilder: (context, i) {
                   int mesa = i + 1;
                   print(locales['mesa-$mesa']);

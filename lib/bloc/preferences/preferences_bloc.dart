@@ -37,7 +37,9 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   }
 
   Stream<PreferencesState> _mapCambiarLocalToState(String local) async* {
-    var user = await _preferencesRepository.usuario;
+    print('cambiar local event');
+    Usuario user = await _preferencesRepository.usuario;
+    print('nombre: ${user.nombre}');
     await _preferencesRepository.saveLocal(local);
     yield PreferencesLoaded(local: local, usuario: user);
   }
@@ -54,17 +56,26 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
 
   Stream<PreferencesState> _mapLoginToState(
       String email, String password) async* {
+    print('login to state');
     String local = await _preferencesRepository.local;
     Usuario user = await _preferencesRepository.login(email, password);
     if (user != null) {
+      print('user != null');
       if (user.cargo == 'mesero') {
+        print('cargo == mesero');
         await _preferencesRepository.saveUsuario(user);
+        print('usuario guardado');
         yield PreferencesLoaded(local: local, usuario: user);
       } else {
+        print('agregando error al stream: solo meseros');
         yield LoginError('Solo los meseros pueden acceder a Waiters');
+        await Future.delayed(Duration(seconds: 1));
+        yield PreferencesLoaded(local: local);
       }
     } else {
       yield LoginError('Usuario no encontrado');
+      await Future.delayed(Duration(seconds: 1));
+      yield PreferencesLoaded(local: local);
     }
   }
 

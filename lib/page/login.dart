@@ -22,11 +22,24 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
-    return BlocBuilder(
-      bloc: prefs,
-      builder: (context, state) => Scaffold(
-        body: Builder(
-          builder: (context) => Padding(
+    return Scaffold(
+      body: BlocBuilder<PreferencesBloc, PreferencesState>(
+        bloc: prefs,
+        builder: (context, state) {
+          if (state is LoginError) {
+            _onWidgetDidBuild(() async {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                    content: Text(
+                      state.error,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red),
+              );
+              print('Estado de error: ' + state.error);
+            });
+          }
+          return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: ListView(
               children: [
@@ -56,20 +69,6 @@ class _SignInState extends State<SignIn> {
                   ),
                   onPressed: () async {
                     prefs.add(Login(mailController.text, passController.text));
-                    await Future.delayed(Duration(seconds: 1));
-                    if (state is LoginError) {
-                      _onWidgetDidBuild(() async {
-                        Scaffold.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(
-                                state.error,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.red),
-                        );
-                        print('Estado de error: ' + state.error);
-                      });
-                    }
                   },
                   textColor: Colors.white,
                   color: Colors.cyan,
@@ -79,8 +78,8 @@ class _SignInState extends State<SignIn> {
                 )
               ],
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

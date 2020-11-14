@@ -36,7 +36,9 @@ class _WaitersAppState extends State<WaitersApp> {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
               primarySwatch: Colors.teal, brightness: Brightness.dark),
-          home: state is PreferencesLoaded ? Home() : SignIn(),
+          home: state is PreferencesLoaded && state.usuario != null
+              ? Home()
+              : SignIn(),
         );
       },
     );

@@ -44,14 +44,13 @@ class PreferencesRepositoryImpl implements PreferencesRepository {
       final response =
           await http.post(url, body: {'correo': correo, 'clave': clave});
       Usuario user;
-      print('created user');
       print('response status: ${response.statusCode}');
       print('response body: ${response.body}');
       if (response.body == '[]') {
         print('empty response from API');
         return null;
       } else if (response.body.length > 0) {
-        user = Usuario.fromList(json.decode(response.body));
+        user = Usuario.fromJson(json.decode(response.body));
         print('usuario obtenido: ${user.nombre}');
       }
       return user;
