@@ -6,28 +6,26 @@ $db = new Database();
 $conn = $db -> getConnection();
 
 // input variables
-$correo = $_POST['correo'];
+$usuario = $_POST['usuario'];
 $clave = md5($_POST['clave']);
 
-$usuario = array();
+$temp_user = array();
 
-$sql = "SELECT trabajador.id, trabajador.nombre, cargo.nombre as cargo
-		FROM trabajador
-		JOIN usuario
-		ON usuario.id = trabajador.usuario
+$sql = "SELECT USU_ID as id, USU_NOMBRE as nombre, car_nombre as cargo
+		FROM usuario		
 		JOIN cargo
-		On cargo.id = trabajador.cargo
-		WHERE usuario.email = :correo
-		AND usuario.password = :clave";
+		On cargo.car_id = usuario.car_id
+		WHERE usuario.usu_usuario = :usuario
+		AND usuario.usu_clave = :clave
+        AND USU_ACTIVO = 1";
 
 $query = $conn -> prepare($sql);
-$query -> bindParam(':correo', $correo, PDO::PARAM_STR);
+$query -> bindParam(':usuario', $usuario, PDO::PARAM_STR);
 $query -> bindParam(':clave', $clave, PDO::PARAM_STR);
 
 $query -> execute();
-$res = $query -> fetch();
+$res = $query -> fetch(PDO::FETCH_ASSOC);
 	if($res != null){					
-			array_push($usuario, $res['id'], $res['nombre'], $res['cargo']);				
+			array_push($temp_user, $res);				
 	}		
-var_dump($usuario);
-echo json_encode($usuario);
+echo json_encode($temp_user);

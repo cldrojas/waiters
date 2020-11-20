@@ -11,8 +11,9 @@ void main() async {
   final preferencesrRepository = PreferencesRepositoryImpl();
   // ignore: close_sinks
   final preferencesBloc = PreferencesBloc(
-      preferencesRepository: preferencesrRepository,
-      local: await preferencesrRepository.local);
+    preferencesRepository: preferencesrRepository,
+  );
+  preferencesBloc.add(LoadPreferences());
   runApp(
     BlocProvider(
       create: (context) => preferencesBloc,
@@ -30,12 +31,18 @@ class _WaitersAppState extends State<WaitersApp> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PreferencesBloc, PreferencesState>(
+      bloc: BlocProvider.of(context),
       builder: (context, state) {
         return MaterialApp(
           title: 'Waiters 1.0',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-              primarySwatch: Colors.teal, brightness: Brightness.dark),
+            brightness: state is PreferencesLoaded && state.dark != null
+                ? state.dark
+                    ? Brightness.dark
+                    : Brightness.light
+                : Brightness.dark,
+          ),
           home: state is PreferencesLoaded && state.usuario != null
               ? Home()
               : SignIn(),
