@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:waiters/model/usuario.dart';
 
@@ -14,10 +15,12 @@ class PreferencesNotLoaded extends PreferencesState {
 class PreferencesLoaded extends PreferencesState {
   final String local;
   final Usuario usuario;
-  PreferencesLoaded({@required this.local, this.usuario}) : super([local]);
+  final bool dark;
+  PreferencesLoaded({@required this.local, this.usuario, this.dark})
+      : super([local, usuario, dark]);
 
   @override
-  List<Object> get props => [local, usuario];
+  List<Object> get props => [local, usuario, dark];
 }
 
 class LoginError extends PreferencesState {

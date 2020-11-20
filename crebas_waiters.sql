@@ -24,8 +24,7 @@ create table trabajador(
 	id int primary key auto_increment,
 	nombre varchar(25) not null,
 	cargo int not null,
-	usuario int not null,
-	activo int not null DEFAULT 1,
+	usuario int not null,	
 	foreign key (cargo) references cargo (id),
 	foreign key (usuario) references usuario (id)
 );

@@ -1,12 +1,12 @@
 <form action="user/login.php" method="post">
-	<label>Correo <input type="text" name="correo"></label>
+	<label>Usuario <input type="text" name="usuario"></label>
 	<label>Clave <input type="text" name="clave"></label>	
 	<input type="submit" value="Verificar usuario">
 </form>
 
 <form action="user/create.php" method="post">
 	<label> Nombre <input type="text" name="nombre"></label>
-	<label> Correo <input type="text" name="correo"></label>
+	<label> Usuario <input type="text" name="correo"></label>
 	<label> Clave <input type="text" name="clave"></label>
 	<label>Cargo <select name="cargo" id="cargo">
 		<option value="1">cocinero</option>

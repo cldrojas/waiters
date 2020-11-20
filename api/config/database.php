@@ -3,9 +3,9 @@ class Database{
   
     // specify your own database credentials
 	private $host = "localhost";
-	private $db_name = "waiters";
-	private $username = "root";
-	private $password = "";
+	private $db_name = "spinnetc_waiters";
+	private $username = "spinnetc_waiters";
+	private $password = "je-V6(w]YAGu";
 	public $conn;
 
 	// get the database connection

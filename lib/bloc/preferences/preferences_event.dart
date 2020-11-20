@@ -16,6 +16,15 @@ class CambiarLocal extends PreferencesEvent {
   List<Object> get props => [local];
 }
 
+class CambiarTema extends PreferencesEvent {
+  final bool dark;
+
+  CambiarTema(this.dark);
+
+  @override
+  List<Object> get props => [dark];
+}
+
 class Login extends PreferencesEvent {
   final String mail;
   final String pass;
