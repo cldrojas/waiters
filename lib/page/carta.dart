@@ -12,11 +12,41 @@ class CartaPage extends StatefulWidget {
 class _CartaPageState extends State<CartaPage> {
   DatabaseReference _dbCarta;
   DatabaseReference _dbPedido;
+  String local;
+  List listaInicial = [];
+  List listaFiltrada = [];
   @override
   void initState() {
     super.initState();
     _dbCarta = FirebaseDatabase.instance.reference().child("carta");
     _dbPedido = FirebaseDatabase.instance.reference().child("pedido");
+    local = widget.path.split('/').first;
+    print('loading carta');
+    _loadCarta();
+  }
+
+  void _loadCarta() async {
+    DataSnapshot recogido = await _dbCarta.once();
+    Map carta = recogido.value;
+    carta.forEach((key, value) {
+      if (!value.toString().contains(local)) {
+        listaInicial.add({key, value});
+      }
+    });
+    print('carta cargada: $listaInicial');
+    setState(() {});
+  }
+
+  void _filtrar(String query) {
+    print('filtrando lista: $query');
+    listaFiltrada.clear();
+    listaInicial.forEach((element) {
+      print('elemento de la lista: ${element.toString()}');
+      if (element.toString().contains(query)) {
+        listaFiltrada.add(element);
+      }
+    });
+    setState(() {});
   }
 
   @override
@@ -24,77 +54,55 @@ class _CartaPageState extends State<CartaPage> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
+          onChanged: _filtrar,
           decoration: InputDecoration(
               hintText: 'Carta', hintStyle: TextStyle(color: Colors.white)),
         ),
       ),
       body: Container(
-        child: StreamBuilder(
-            stream: _dbCarta.onValue,
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  !snapshot.hasError &&
-                  snapshot.data != null) {
-                if (snapshot.data.snapshot.value != null) {
-                  Map<String, dynamic> _sandwich =
-                      Map.from(snapshot.data.snapshot.value);
-                  //String dispo = _sandwich.entries.;
+        child: ListView.builder(
+          itemCount: listaFiltrada.isEmpty
+              ? listaInicial.length
+              : listaFiltrada.length,
+          itemBuilder: (context, index) {
+            String item = listaFiltrada.isEmpty
+                ? listaInicial
+                    .elementAt(index)
+                    .toString()
+                    .split(',')
+                    .first
+                    .substring(1)
+                : listaFiltrada
+                    .elementAt(index)
+                    .toString()
+                    .split(',')
+                    .first
+                    .substring(1);
 
-                  return ListView.builder(
-                      itemCount: snapshot.data.snapshot.value.length,
-                      itemBuilder: (context, index) {
-                        String item = _sandwich.entries.elementAt(index).key;
-                        var cosas = _sandwich.entries.elementAt(index).value;
-                        String local = widget.path.split('/').first;
-                        if (!cosas.entries.toString().contains(local)) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: ListTile(
-                              title: Text(
-                                item,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              leading: Icon(
-                                Icons.list,
-                                color: Colors.white,
-                              ),
-                              tileColor: Colors.deepPurple,
-                              onTap: () {
-                                _dbPedido
-                                    .child(widget.path)
-                                    .update({'item-$index': item});
-                                Navigator.pop(context);
-                              },
-                            ),
-                          );
-                        } else {
-                          return Divider(
-                            height: 0,
-                          );
-                        }
-                      });
-                } else {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.sticky_note_2_outlined,
-                          size: 100,
-                        ),
-                        Text(
-                          'Pedido nuevo',
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  );
-                }
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }),
+            var detalles = listaInicial.contains('$local');
+
+            print('detalles: $detalles');
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: ListTile(
+                title: Text(
+                  item,
+                  style: TextStyle(color: Colors.white),
+                ),
+                leading: Icon(
+                  Icons.list,
+                  color: Colors.white,
+                ),
+                tileColor: Colors.blueAccent,
+                onTap: () {
+                  _dbPedido.child(widget.path).update({'item-$index': item});
+                  Navigator.pop(context);
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
