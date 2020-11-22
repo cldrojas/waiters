@@ -49,23 +49,27 @@ class _MesaState extends State<Mesa> {
 
     return GestureDetector(
       onTap: () {
-        FirebaseDatabase.instance
-            .reference()
-            .child("local/${widget.local}")
-            .update({'mesa-${widget.index}': 'pidiendo'});
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PedidoPage(
-                      local: widget.local,
-                      mesa: widget.index,
-                    )));
+        if (widget.estado == 'mesero' || widget.estado == 'pidiendo') {
+          FirebaseDatabase.instance
+              .reference()
+              .child("local/${widget.local}")
+              .update({'mesa-${widget.index}': 'pidiendo'});
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PedidoPage(
+                        local: widget.local,
+                        mesa: widget.index,
+                      )));
+        }
       },
       onLongPress: () {
-        FirebaseDatabase.instance
-            .reference()
-            .child("local/${widget.local}")
-            .update({'mesa-${widget.index}': 'ocupada'});
+        if (widget.estado == 'listo') {
+          FirebaseDatabase.instance
+              .reference()
+              .child("local/${widget.local}")
+              .update({'mesa-${widget.index}': 'ocupada'});
+        }
       },
       child: Container(
           height: 200,

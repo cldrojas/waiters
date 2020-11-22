@@ -50,20 +50,31 @@ class _HomeState extends State<Home> {
               print('locales del builder: $locales');
               print(
                   'variable mesero = ${snapshot.data.snapshot.value['$local']['mesero']}');
-              snapshot.data.snapshot.value['$local']['mesero'] == 'false'
+              snapshot.data.snapshot.value['$local']['mesero'] == false
                   ? mesero = false
                   : mesero = true;
               return Scaffold(
                 appBar: AppBar(
                   title: GestureDetector(
                     child: Text(
-                      'Local vinculado: $local',
+                      mesero == false
+                          ? 'Local vinculado: $local'
+                          : 'Solicitud cocina',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
                         color: mesero == false ? Colors.white : Colors.green,
                       ),
                     ),
+                    onTap: () {
+                      if (mesero == true) {
+                        FirebaseDatabase.instance
+                            .reference()
+                            .child("local/$local")
+                            .update({'mesero': false});
+                        setState(() {});
+                      }
+                    },
                   ),
                   centerTitle: true,
                   backgroundColor:
