@@ -50,9 +50,7 @@ class _HomeState extends State<Home> {
               print('locales del builder: $locales');
               print(
                   'variable mesero = ${snapshot.data.snapshot.value['$local']['mesero']}');
-              snapshot.data.snapshot.value['$local']['mesero'] == false
-                  ? mesero = false
-                  : mesero = true;
+              mesero = snapshot.data.snapshot.value['$local']['mesero'];
               return Scaffold(
                 appBar: AppBar(
                   title: GestureDetector(

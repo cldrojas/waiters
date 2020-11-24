@@ -37,6 +37,12 @@ class _CartaPageState extends State<CartaPage> {
     setState(() {});
   }
 
+  Future<Map> _loadPedido() async {
+    DataSnapshot pedido = await _dbPedido.child(widget.path).once();
+    Map detalle = pedido.value;
+    return detalle;
+  }
+
   void _filtrar(String query) {
     print('filtrando lista: $query');
     listaFiltrada.clear();
@@ -95,8 +101,17 @@ class _CartaPageState extends State<CartaPage> {
                   color: Colors.white,
                 ),
                 tileColor: Colors.blueAccent,
-                onTap: () {
-                  _dbPedido.child(widget.path).update({'item-$index': item});
+                onTap: () async {
+                  var pedido = await _loadPedido();
+                  if (pedido != null && pedido.containsKey(item)) {
+                    DataSnapshot cantidad =
+                        await _dbPedido.child('${widget.path}/$item').once();
+                    _dbPedido
+                        .child(widget.path)
+                        .update({item: cantidad.value + 1});
+                  } else {
+                    _dbPedido.child(widget.path).update({item: 1});
+                  }
                   Navigator.pop(context);
                 },
               ),

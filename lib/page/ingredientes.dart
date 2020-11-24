@@ -43,17 +43,17 @@ class _IngredientesPageState extends State<IngredientesPage> {
                   if (snapshot.data.snapshot.value != null) {
                     print('Snapshot obtenido: $snapshot');
                     return ListView.builder(
-                        itemCount: snapshot.data.snapshot.value.length - 1,
+                        itemCount: snapshot.data.snapshot.value.length,
                         itemBuilder: (context, index) {
                           print(snapshot.data.snapshot.value);
-                          String item;
-                          if (snapshot.data.snapshot.value[index + 1] != null) {
-                            item = snapshot.data.snapshot.value[index + 1]
-                                .toString();
+                          String ingrediente;
+                          if (snapshot.data.snapshot.value[index] != null) {
+                            ingrediente =
+                                snapshot.data.snapshot.value[index].toString();
                           }
                           Color _color;
-                          widget.plato.contains(item) &&
-                                  widget.plato.contains('sin')
+
+                          widget.plato.contains('sin $ingrediente')
                               ? _color = Colors.red
                               : _color = Colors.blue;
 
@@ -61,26 +61,33 @@ class _IngredientesPageState extends State<IngredientesPage> {
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: ListTile(
                               title: Text(
-                                item,
+                                ingrediente,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20),
                               ),
                               tileColor: _color,
                               onTap: () {
-                                if (widget.plato.contains(item) &&
-                                    widget.plato.contains('sin')) {
+                                //quita el ingrediente seleccionado del producto
+                                if (widget.plato.contains('sin $ingrediente')) {
+                                  //devuelve el ingrediente restado al producto
                                   var temp = widget.plato
-                                      .replaceFirst(' sin $item', '');
+                                      .replaceFirst(' sin $ingrediente', '');
+                                  _dbPedido
+                                      .child('${widget.path}/${widget.plato}')
+                                      .remove();
                                   _dbPedido
                                       .child('${widget.path}')
-                                      .update({'${widget.id}': '$temp'});
-                                  Navigator.pop(context);
+                                      .update({'$temp': 1});
                                 } else {
-                                  _dbPedido.child('${widget.path}').update({
-                                    '${widget.id}': '${widget.plato} sin $item'
-                                  });
-                                  Navigator.pop(context);
+                                  //cambia el producto para indicar el ingrediente restado
+                                  _dbPedido
+                                      .child('${widget.path}/${widget.plato}')
+                                      .remove();
+                                  _dbPedido.child('${widget.path}').update(
+                                      {'${widget.plato} sin $ingrediente': 1});
                                 }
+                                Navigator.pop(
+                                    context); //vuelve a la pantalla pedido
                               },
                             ),
                           );
