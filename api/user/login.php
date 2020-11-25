@@ -11,12 +11,12 @@ $clave = md5($_POST['clave']);
 
 $temp_user = array();
 
-$sql = "SELECT USU_ID as id, USU_NOMBRE as nombre, car_nombre as cargo
-		FROM usuario		
-		JOIN cargo
-		On cargo.car_id = usuario.car_id
-		WHERE usuario.usu_usuario = :usuario
-		AND usuario.usu_clave = :clave
+$sql = "SELECT USU_ID as id, USU_NOMBRE as nombre, CAR_NOMBRE as cargo
+		FROM USUARIO		
+		JOIN CARGO
+		On CARGO.CAR_ID = USUARIO.CAR_ID
+		WHERE USUARIO.USU_USUARIO = :usuario
+		AND USUARIO.USU_CLAVE = :clave
         AND USU_ACTIVO = 1";
 
 $query = $conn -> prepare($sql);

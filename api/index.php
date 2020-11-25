@@ -1,10 +1,10 @@
-<form action="user/login.php" method="post">
+<form action="https://waiters.spinnet.cl/user/login.php" method="post">
 	<label>Usuario <input type="text" name="usuario"></label>
 	<label>Clave <input type="text" name="clave"></label>	
 	<input type="submit" value="Verificar usuario">
 </form>
 
-<form action="user/create.php" method="post">
+<form action="https://waiters.spinnet.cl/user/create.php" method="post">
 	<label> Nombre <input type="text" name="nombre"></label>
 	<label> Usuario <input type="text" name="correo"></label>
 	<label> Clave <input type="text" name="clave"></label>
@@ -17,7 +17,7 @@
 	<input type="submit" value="Crear usuario">
 </form>
 
-<form action="venta/create.php" method="post">
+<form action="https://waiters.spinnet.cl/venta/create.php" method="post">
 	<label> Fecha <input type="date" name="fecha"></label>
 	<label>Trabajador <select name="trabajador" id="trabajador">
 		<option value="1"> admin </option>
