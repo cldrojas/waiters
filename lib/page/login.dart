@@ -73,8 +73,9 @@ class _SignInState extends State<SignIn> {
                   textColor: Colors.white,
                   color: Colors.cyan,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Colors.black)),
+                    borderRadius: BorderRadius.circular(10),
+                    side: BorderSide(color: Colors.black),
+                  ),
                 )
               ],
             ),
